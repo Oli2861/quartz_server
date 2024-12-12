@@ -1,0 +1,12 @@
+services:
+  quartz_server:
+    image: quartz_server
+    container_name: quartz_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment: 
+      QUARTZ_CONTENT_REPOSITORY_URL: https://git.oliver-schmid.net/Oli/quartz_content.git
+    ports:
+      - "80:80"
+

@@ -1,0 +1,2 @@
+MAILTO=cron@oliver-schmid.net
+*/15 * * * * /bin/bash /home/oli/quartz/build_quartz_pages

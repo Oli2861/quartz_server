@@ -1,0 +1,12 @@
+#!/bin/bash
+cd $(mktemp -d) && \
+git clone $QUARTZ_CONTENT_REPOSITORY_URL && \
+cd * && \
+cp -Rp . /app/quartz/content 
+
+cd /app/quartz && \
+npx quartz build -o current_quartz_build
+
+rm -rf /var/www/quartz/public/*
+cp -r current_quartz_build/* /var/www/quartz/public/
+chown -R www-data:www-data /var/www/quartz/public

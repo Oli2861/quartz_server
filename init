@@ -1,0 +1,14 @@
+#!/bin/bash
+
+QUARTZ_REPO_DIR="/app/quartz"
+
+echo "----- Building quartz pages ------"
+/bin/bash /app/build_quartz_pages 
+if [ $? -eq 0 ]; then
+    echo "----- BUILD quartz pages to /var/www/quartz/public/* ------"
+else
+    echo "----- FAILED to build quartz pages ------"
+fi
+
+echo "----- Starting nginx ------"
+/usr/sbin/nginx -g "daemon off;"
