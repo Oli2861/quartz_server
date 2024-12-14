@@ -1,14 +1,13 @@
 #!/bin/bash
 
-QUARTZ_REPO_DIR="/app/quartz"
+printenv | grep "QUARTZ_CONTENT_REPOSITORY_URL" >> /etc/environment
 
-echo "----- Building quartz pages ------"
+echo "----- Starting initial quartz build ------"
 /bin/bash /app/build_quartz_pages 
-if [ $? -eq 0 ]; then
-    echo "----- BUILD quartz pages to /var/www/quartz/public/* ------"
-else
-    echo "----- FAILED to build quartz pages ------"
-fi
 
-echo "----- Starting nginx ------"
-/usr/sbin/nginx -g "daemon off;"
+echo "----- Starting nginx & Listening to cron job ------"
+
+/usr/sbin/nginx -g "daemon off;" &
+
+cron && tail -f /var/log/cron.log &
+wait

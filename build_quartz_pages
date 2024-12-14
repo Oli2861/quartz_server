@@ -1,12 +1,18 @@
 #!/bin/bash
+
+echo "----- STARTING to build quartz pages ------"
+printenv | grep "QUARTZ_CONTENT_REPOSITORY_URL"
+
 cd $(mktemp -d) && \
 git clone $QUARTZ_CONTENT_REPOSITORY_URL && \
 cd * && \
-cp -Rp . /app/quartz/content 
-
+cp -Rp . /app/quartz/content && \
 cd /app/quartz && \
-npx quartz build -o current_quartz_build
+npx quartz build -o current_quartz_build && \
+rm -rf /var/www/quartz/public/* && \
+cp -r current_quartz_build/* /var/www/quartz/public/ && \
+chown -R www-data:www-data /var/www/quartz/public && \
+ls /var/www/quartz/public && \
+echo "----- SUCCESS: Built quartz pages to /var/www/quartz/public/* ------" && exit 0
 
-rm -rf /var/www/quartz/public/*
-cp -r current_quartz_build/* /var/www/quartz/public/
-chown -R www-data:www-data /var/www/quartz/public
+echo "----- FAILED: To build quartz pages ------" && exit 1

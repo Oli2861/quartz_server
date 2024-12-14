@@ -1,0 +1,3 @@
+*/5 * * * * root /bin/bash /app/build_quartz_pages >> /var/log/cron.log 2>&1
+# Empty line is necessary
+
