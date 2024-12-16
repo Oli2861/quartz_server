@@ -7,6 +7,7 @@ cd $(mktemp -d) && \
 git clone $QUARTZ_CONTENT_REPOSITORY_URL && \
 cd * && \
 cp -Rp . /app/quartz/content && \
+rm -r .
 cd /app/quartz && \
 npx quartz build -o current_quartz_build && \
 rm -rf /var/www/quartz/public/* && \
