@@ -21,6 +21,7 @@ RUN touch /var/log/cron.log
 # Prepare public dir from which nginx will serve files
 RUN mkdir -p /var/www/quartz/public/* && chown -R www-data:www-data /var/www/quartz/public
 RUN mkdir -p /app/quartz
+RUN mkdir -p /app/repository
 
 # Clone & build quartz
 RUN git clone https://github.com/jackyzha0/quartz.git /app/quartz -b v4
