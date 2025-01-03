@@ -2,34 +2,57 @@
 
 echo "----- STARTING to build quartz pages ------"
 
-function get_contents() {
-    URL=$1
-    REPO_DIR=$2
-    CONTENT_DIR=$3
+IS_CHANGED=false
 
-    if [[ "$(ls $REPO_DIR | wc -l)" -eq 0 ]]; then
-        echo "Repository doesnt exist yet --> cloning $URL"
-        git clone $URL $REPO_DIR
+function is_remote_changed() {
+    local repo_dir=$1
+    cd $repo_dir
+    local local_commit=$(git rev-parse HEAD)
+    git fetch
+    local remote_commit=$(git rev-parse @{u})
+
+    if [[ "$local_commit" != "$remote_commit" ]]; then
+        echo "Remote changed $local_commit $remote_commit"
+        IS_CHANGED=true
+    fi
+}
+
+function get_contents() {
+    local url=$1
+    local repo_dir=$2
+    local content_dir=$3
+
+    if [[ "$(ls $repo_dir | wc -l)" -eq 0 ]]; then
+        echo "Repository doesnt exist yet --> cloning $url"
+        git clone $url $repo_dir
+        IS_CHANGED=true
     else 
-        echo "Repository exists --> pulling $QUARTZ_CONTENT_REPOSITORY_URL"
-        cd $REPO_DIR && git pull
+        is_remote_changed $repo_dir
+        if [[ "$IS_CHANGED" == true ]]; then
+            echo "Repository exists --> pulling $QUARTZ_CONTENT_REPOSITORY_URL"
+            cd $repo_dir && git pull
+        else
+            echo "Local state is up to date."
+        fi
     fi
 
-    cp -Rp $REPO_DIR/* $CONTENT_DIR
+    cp -Rp $repo_dir/* $content_dir
 }
 
 function build_contents() {
-    QUARTZ_DIR=$1
-    OUTPUT_DIR=$2
+    local quartz_dir=$1
+    local output_dir=$2
 
-    cd $QUARTZ_DIR && \
+    cd $quartz_dir && \
     npx quartz build -o current_quartz_build && \
-    cp -TR current_quartz_build $OUTPUT_DIR  && \
-    chown -R www-data:www-data $OUTPUT_DIR && \
-    echo "----- SUCCESS: Built quartz pages to $OUTPUT_DIR ------" && exit 0
+    cp -TR current_quartz_build $output_dir  && \
+    chown -R www-data:www-data $output_dir && \
+    echo "----- SUCCESS: Built quartz pages to $output_dir ------" && exit 0
     echo "----- FAILED: To build quartz pages ------" && exit 1
 }
 
 get_contents $QUARTZ_CONTENT_REPOSITORY_URL /app/repository /app/quartz/content
-build_contents /app/quartz /var/www/quartz/public
+if [[ "$IS_CHANGED" == true ]]; then
+    build_contents /app/quartz /var/www/quartz/public
+fi
 
