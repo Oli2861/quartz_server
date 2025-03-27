@@ -8,5 +8,5 @@ services:
     environment: 
       QUARTZ_CONTENT_REPOSITORY_URL: https://git.oliver-schmid.net/Oli/quartz_content.git
     ports:
-      - "80:80"
+      - "81:80"
 
