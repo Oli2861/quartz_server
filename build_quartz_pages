@@ -44,7 +44,9 @@ function build_contents() {
     local output_dir=$2
 
     cd $quartz_dir && \
+    rm -rf "$output_dir"/current_quartz_build/{*,.*} && \
     npx quartz build -o current_quartz_build && \
+    rm -rf "$output_dir"/{*,.*} && \
     cp -TR current_quartz_build $output_dir  && \
     chown -R www-data:www-data $output_dir && \
     echo "----- SUCCESS: Built quartz pages to $output_dir ------" && exit 0
