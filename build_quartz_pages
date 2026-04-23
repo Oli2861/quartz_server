@@ -43,6 +43,11 @@ function build_contents() {
     local quartz_dir=$1
     local output_dir=$2
 
+    # Copy custom config before building
+    if [ -f /app/quartz.config.ts ]; then
+        cp /app/quartz.config.ts $quartz_dir/quartz.config.ts
+    fi
+
     cd $quartz_dir && \
     rm -rf "$output_dir"/current_quartz_build/{*,.*} && \
     npx quartz build -o current_quartz_build && \

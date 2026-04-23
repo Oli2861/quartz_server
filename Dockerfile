@@ -13,6 +13,7 @@ COPY build_quartz_pages build_quartz_pages
 COPY init init
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.conf.template /app/nginx.conf.template
+COPY quartz.config.ts /app/quartz.config.ts
 
 # Configure cron job
 COPY cron_rebuild_site /etc/cron.d/cron_rebuild_site
