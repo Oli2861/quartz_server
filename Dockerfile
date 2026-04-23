@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update -y && \ 
     apt-get upgrade -y && \
     apt-get install curl git nginx cron -y && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs
 
 # Copy files
