@@ -1,6 +1,13 @@
 #!/bin/bash
 
+# Set default values if not provided
+export NGINX_SERVER_NAME="${NGINX_SERVER_NAME:-_}"
+export NGINX_BASE_PATH="${NGINX_BASE_PATH:-/quartz}"
+
 printenv | grep "QUARTZ_CONTENT_REPOSITORY_URL" >> /etc/environment
+
+# Generate nginx server config from template
+envsubst '${NGINX_SERVER_NAME} ${NGINX_BASE_PATH}' < /app/nginx.conf.template > /etc/nginx/conf.d/default.conf
 
 echo "----- Starting initial quartz build ------"
 /bin/bash /app/build_quartz_pages 

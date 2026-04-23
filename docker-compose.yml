@@ -6,7 +6,16 @@ services:
       context: .
       dockerfile: Dockerfile
     environment: 
-      QUARTZ_CONTENT_REPOSITORY_URL: https://git.oliver-schmid.net/Oli/quartz_content.git
+      QUARTZ_CONTENT_REPOSITORY_URL: 
+      NGINX_SERVER_NAME: 
+      NGINX_BASE_PATH: /quartz
+    networks:
+      - delevate
     ports:
       - "81:80"
+
+networks:
+  delevate:
+    external: true
+    name: delevate
 

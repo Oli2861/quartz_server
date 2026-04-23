@@ -1,0 +1,19 @@
+server {
+    server_name ${NGINX_SERVER_NAME};
+    listen 80;
+
+    index index.html;
+    root /var/www/quartz/public;
+
+    # Serve content based on configured base path
+    location ${NGINX_BASE_PATH} {
+        alias /var/www/quartz/public;
+        try_files $uri $uri.html $uri/ ${NGINX_BASE_PATH}/404.html;
+    }
+
+    # Handle nested paths when using base path
+    location ~ ${NGINX_BASE_PATH}/(.+) {
+        alias /var/www/quartz/public;
+        try_files /$1 /$1.html /$1/ ${NGINX_BASE_PATH}/404.html;
+    }
+}

@@ -4,7 +4,7 @@ WORKDIR /app
 # Install nginx
 RUN apt-get update -y && \ 
     apt-get upgrade -y && \
-    apt-get install curl git nginx cron -y && \
+    apt-get install curl git nginx cron gettext-base -y && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs
 
@@ -12,6 +12,7 @@ RUN apt-get update -y && \
 COPY build_quartz_pages build_quartz_pages
 COPY init init
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf.template /app/nginx.conf.template
 
 # Configure cron job
 COPY cron_rebuild_site /etc/cron.d/cron_rebuild_site
