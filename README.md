@@ -11,19 +11,6 @@ Periodically checks the git repository specified in the docker environment varia
   - Set to `/` or empty string to serve at root `https://example.com/`
 
 ## Customization
-
-### Theme
-
-The repository includes a custom `quartz.config.ts` with the **dbeyond ai+** theme featuring:
-- **Dark Mode (default)**: Pure black background (`#000000`) with white text, matching dbeyond.ai
-- **Accent Colors**: 
-  - Primary: Orange (`#ff6600`) - the signature dbeyond color
-  - Secondary: Blue (`#5a9fd6`) - for hover states and tertiary elements
-- **Typography**: Inter font for body and headers, JetBrains Mono for code
-- **Light Mode**: Also available with the same orange/blue accent scheme
-
-To modify the theme, edit `quartz.config.ts` and rebuild the Docker image.
-
 ### Layout
 
 To customize the layout, add a `quartz.layout.ts` file to the repository. See [Quartz Layout Documentation](https://quartz.jzhao.xyz/layout) for more information.
