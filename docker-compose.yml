@@ -5,10 +5,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment: 
-      QUARTZ_CONTENT_REPOSITORY_URL: 
-      NGINX_SERVER_NAME: 
+    environment:
+      QUARTZ_CONTENT_REPOSITORY_URL:
+      NGINX_SERVER_NAME:
       NGINX_BASE_PATH: /quartz
+      SSH_AUTH_SOCK: /ssh-agent.sock
+    volumes:
+      - ${SSH_AUTH_SOCK:-/dev/null}:/ssh-agent.sock
+      - ~/.ssh/known_hosts:/root/.ssh/known_hosts:ro
     networks:
       - delevate
     ports:
@@ -18,4 +22,3 @@ networks:
   delevate:
     external: true
     name: delevate
-
