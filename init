@@ -2,12 +2,26 @@
 
 # Set default values if not provided
 export NGINX_SERVER_NAME="${NGINX_SERVER_NAME:-_}"
-export NGINX_BASE_PATH="${NGINX_BASE_PATH:-/quartz}"
+
+# Normalise the base path to either "" (serve at the root path) or "/some/path".
+# An explicitly empty value means the root path, so only an unset value defaults.
+NGINX_BASE_PATH="${NGINX_BASE_PATH-/quartz}"
+NGINX_BASE_PATH="/$(printf '%s' "$NGINX_BASE_PATH" | sed 's#^/*##; s#/*$##')"
+if [ "$NGINX_BASE_PATH" = "/" ]; then
+    NGINX_BASE_PATH=""
+fi
+export NGINX_BASE_PATH
+
+if [ -n "$NGINX_BASE_PATH" ]; then
+    export NGINX_BASE_REDIRECT="location = ${NGINX_BASE_PATH} { return 301 ${NGINX_BASE_PATH}/; }"
+else
+    export NGINX_BASE_REDIRECT=""
+fi
 
 printenv | grep "QUARTZ_CONTENT_REPOSITORY_URL" >> /etc/environment
 
 # Generate nginx server config from template
-envsubst '${NGINX_SERVER_NAME} ${NGINX_BASE_PATH}' < /app/nginx.conf.template > /etc/nginx/conf.d/default.conf
+envsubst '${NGINX_SERVER_NAME} ${NGINX_BASE_PATH} ${NGINX_BASE_REDIRECT}' < /app/nginx.conf.template > /etc/nginx/conf.d/default.conf
 
 echo "----- Starting initial quartz build ------"
 /bin/bash /app/build_quartz_pages 

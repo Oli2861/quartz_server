@@ -2,18 +2,25 @@ server {
     server_name ${NGINX_SERVER_NAME};
     listen 80;
 
-    index index.html;
     root /var/www/quartz/public;
 
-    # Serve content based on configured base path
-    location ${NGINX_BASE_PATH} {
-        alias /var/www/quartz/public;
-        try_files $uri $uri.html $uri/ ${NGINX_BASE_PATH}/404.html;
+    # Redirects the bare base path to its trailing-slash form.
+    # Empty when the site is served at the root path.
+    ${NGINX_BASE_REDIRECT}
+
+    # Serves the site under the configured base path.
+    # $page is the request path with the base path stripped off.
+    # Quartz emits `page.html` for notes and `folder/index.html` for folders,
+    # so extensionless URLs resolve against both before a literal file.
+    location ~ ^${NGINX_BASE_PATH}/(?<page>.*)$ {
+        try_files /$page.html /$page/index.html /$page =404;
     }
 
-    # Handle nested paths when using base path
-    location ~ ${NGINX_BASE_PATH}/(.+) {
-        alias /var/www/quartz/public;
-        try_files /$1 /$1.html /$1/ ${NGINX_BASE_PATH}/404.html;
+    # Anything outside the base path is not part of the site.
+    # Unreachable when the base path is the root path.
+    location / {
+        return 404;
     }
+
+    error_page 404 ${NGINX_BASE_PATH}/404.html;
 }
